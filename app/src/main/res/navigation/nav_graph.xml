@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loadingFragment">
+
+    <fragment
+        android:id="@+id/loadingFragment"
+        android:name="com.example.quwitest.ui.loading.LoadingFragment"
+        android:label="fragment_loading"
+        tools:layout="@layout/fragment_loading" >
+        <action
+            android:id="@+id/action_loadingFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_loadingFragment_to_projectListFragment"
+            app:destination="@id/projectListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/projectListFragment"
+        android:name="com.example.quwitest.ui.projectlist.ProjectListFragment"
+        android:label="ProjectListFragment" >
+        <action
+            android:id="@+id/action_projectListFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.example.quwitest.ui.projectdetails.DetailsFragment"
+        android:label="details_fragment"
+        tools:layout="@layout/details_fragment" >
+        <action
+            android:id="@+id/action_detailsFragment_to_editProjectNameFragment"
+            app:destination="@id/editProjectNameFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.quwitest.ui.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_projectListFragment"
+            app:destination="@id/projectListFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/editProjectNameFragment"
+        android:name="com.example.quwitest.ui.editprojectdialog.EditProjectNameFragment"
+        android:label="fragment_edit_project_name"
+        tools:layout="@layout/fragment_edit_project_name" >
+        <action
+            android:id="@+id/action_editProjectNameFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </dialog>
+
+
+</navigation>
