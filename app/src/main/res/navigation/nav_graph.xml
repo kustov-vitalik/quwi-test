@@ -8,20 +8,24 @@
     <fragment
         android:id="@+id/loadingFragment"
         android:name="com.example.quwitest.ui.loading.LoadingFragment"
-        android:label="fragment_loading"
+        android:label="@string/loading"
         tools:layout="@layout/fragment_loading" >
         <action
             android:id="@+id/action_loadingFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_loadingFragment_to_projectListFragment"
-            app:destination="@id/projectListFragment" />
+            app:destination="@id/projectListFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
         android:id="@+id/projectListFragment"
         android:name="com.example.quwitest.ui.projectlist.ProjectListFragment"
-        android:label="ProjectListFragment" >
+        android:label="@string/project_list" >
         <action
             android:id="@+id/action_projectListFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
@@ -30,30 +34,40 @@
     <fragment
         android:id="@+id/detailsFragment"
         android:name="com.example.quwitest.ui.projectdetails.DetailsFragment"
-        android:label="details_fragment"
+        android:label="@string/project_details"
         tools:layout="@layout/details_fragment" >
         <action
             android:id="@+id/action_detailsFragment_to_editProjectNameFragment"
             app:destination="@id/editProjectNameFragment" />
+        <argument
+            android:name="project"
+            app:argType="com.example.quwitest.data.local.Project" />
     </fragment>
 
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.quwitest.ui.login.LoginFragment"
-        android:label="fragment_login"
+        android:label="@string/sign_in_title"
         tools:layout="@layout/fragment_login" >
         <action
             android:id="@+id/action_loginFragment_to_projectListFragment"
-            app:destination="@id/projectListFragment" />
+            app:destination="@id/projectListFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </fragment>
     <dialog
         android:id="@+id/editProjectNameFragment"
         android:name="com.example.quwitest.ui.editprojectdialog.EditProjectNameFragment"
-        android:label="fragment_edit_project_name"
+        android:label="@string/edit_project_name_title"
         tools:layout="@layout/fragment_edit_project_name" >
+        <argument
+            android:name="project"
+            app:argType="com.example.quwitest.data.local.Project" />
         <action
             android:id="@+id/action_editProjectNameFragment_to_detailsFragment"
-            app:destination="@id/detailsFragment" />
+            app:destination="@id/detailsFragment"
+            app:popUpTo="@id/detailsFragment"
+            app:popUpToInclusive="true" />
     </dialog>
 
 

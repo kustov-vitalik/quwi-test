@@ -9,12 +9,14 @@ import android.graphics.Shader;
 
 import com.squareup.picasso.Transformation;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class CircleImageTransformation implements Transformation {
     private final int radius;
     private final int margin;
+
+    public CircleImageTransformation(int radius, int margin) {
+        this.radius = radius;
+        this.margin = margin;
+    }
 
     @Override
     public Bitmap transform(Bitmap source) {

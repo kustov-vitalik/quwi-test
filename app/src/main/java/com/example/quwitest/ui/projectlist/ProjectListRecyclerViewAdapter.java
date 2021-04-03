@@ -4,36 +4,38 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.quwitest.R;
-import com.example.quwitest.data.network.dto.Project;
+import com.example.quwitest.data.local.Project;
 import com.example.quwitest.databinding.FragmentProjectsBinding;
-import com.example.quwitest.utils.CircleImageTransformation;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.Setter;
+import java.util.Objects;
 
 public class ProjectListRecyclerViewAdapter extends RecyclerView.Adapter<ProjectListRecyclerViewAdapter.ViewHolder> {
 
     private final List<Project> projects = new ArrayList<>();
-    private final CircleImageTransformation imageTransformation = new CircleImageTransformation(40, 8);
+    private final Transformation imageTransformation;
+    private final OnProjectClickListener onProjectClickListener;
 
-    @Setter
-    private OnProjectClickListener onProjectClickListener;
+    public ProjectListRecyclerViewAdapter(@NonNull OnProjectClickListener onProjectClickListener, @NonNull Transformation transformation) {
+        this.onProjectClickListener = Objects.requireNonNull(onProjectClickListener);
+        this.imageTransformation = Objects.requireNonNull(transformation);
+    }
 
     @NotNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_projects, parent, false);
-
-        return new ViewHolder(view);
+    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+        FragmentProjectsBinding binding = FragmentProjectsBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new ViewHolder(binding, this::onItemClick, imageTransformation);
     }
 
     @Override
@@ -47,36 +49,74 @@ public class ProjectListRecyclerViewAdapter extends RecyclerView.Adapter<Project
     }
 
     public void setItems(List<Project> items) {
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ProjectListDiffCallback(projects, items));
         projects.clear();
         projects.addAll(items);
-        notifyDataSetChanged();
+        diffResult.dispatchUpdatesTo(this);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private final FragmentProjectsBinding binding;
+    public void onItemClick(int adapterPosition) {
+        onProjectClickListener.onProjectClick(projects.get(adapterPosition));
+    }
 
-        public ViewHolder(View view) {
-            super(view);
-            binding = FragmentProjectsBinding.bind(view);
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final FragmentProjectsBinding binding;
+        private final Transformation transformation;
+
+        public ViewHolder(FragmentProjectsBinding binding, OnItemClickListener onItemClickListener, Transformation transformation) {
+            super(binding.getRoot());
+            this.transformation = transformation;
+            this.binding = binding;
+            binding.getRoot().setOnClickListener(v -> onItemClickListener.onItemClick(getAdapterPosition()));
         }
 
         public void bind(Project project) {
             binding.content.setText(project.getName());
             Picasso.get().load(project.getLogoUrl())
-                    .transform(imageTransformation)
+                    .transform(transformation)
                     .placeholder(R.drawable.project_logo_placeholder)
                     .error(R.drawable.project_logo_placeholder)
                     .into(binding.itemLogo);
             binding.itemLogo.setVisibility(View.VISIBLE);
-            binding.getRoot().setOnClickListener(v -> {
-                if (onProjectClickListener != null) {
-                    onProjectClickListener.onProjectClick(project);
-                }
-            });
         }
     }
 
     public interface OnProjectClickListener {
         void onProjectClick(Project project);
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int adapterPosition);
+    }
+
+    private static class ProjectListDiffCallback extends DiffUtil.Callback {
+
+        private final List<Project> oldProjectList;
+        private final List<Project> newProjectList;
+
+        public ProjectListDiffCallback(List<Project> oldProjectList, List<Project> newProjectList) {
+            this.oldProjectList = oldProjectList;
+            this.newProjectList = newProjectList;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return oldProjectList.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return newProjectList.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldProjectList.get(oldItemPosition).getId() == newProjectList.get(newItemPosition).getId();
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return oldProjectList.get(oldItemPosition).equals(newProjectList.get(newItemPosition));
+        }
     }
 }

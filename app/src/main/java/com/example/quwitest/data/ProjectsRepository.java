@@ -1,15 +1,13 @@
 package com.example.quwitest.data;
 
-import android.content.Context;
-
-import com.example.quwitest.data.network.ApiService;
+import com.example.quwitest.data.local.Project;
 import com.example.quwitest.data.network.ProjectsResource;
-import com.example.quwitest.data.network.dto.Project;
 import com.example.quwitest.data.network.dto.ProjectListResponse;
 import com.example.quwitest.data.network.dto.UpdateProjectRequest;
 import com.example.quwitest.data.network.dto.UpdateProjectResponse;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -20,22 +18,24 @@ public class ProjectsRepository {
 
     private final ProjectsResource projectsResource;
 
-    public ProjectsRepository(Context context) {
-        projectsResource = ApiService.projectsResource(context);
+    public ProjectsRepository(ProjectsResource projectsResource) {
+        this.projectsResource = projectsResource;
     }
 
     public Observable<List<Project>> getProjects() {
         return projectsResource.list()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(ProjectListResponse::getProjects);
+                .map(ProjectListResponse::getProjects)
+                .map(projects -> projects.stream().map(Project::fromDTO).collect(Collectors.toList()));
     }
 
     public Single<Project> updateProjectName(Project project, String updatedName) {
         return projectsResource.update(project.getId(), new UpdateProjectRequest(updatedName))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(UpdateProjectResponse::getProject);
+                .map(UpdateProjectResponse::getProject)
+                .map(Project::fromDTO);
     }
 
 

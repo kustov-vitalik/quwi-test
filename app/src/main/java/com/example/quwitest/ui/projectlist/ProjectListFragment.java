@@ -1,5 +1,6 @@
 package com.example.quwitest.ui.projectlist;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,18 +12,34 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.quwitest.data.network.dto.Project;
+import com.example.quwitest.Application;
+import com.example.quwitest.MainActivity;
+import com.example.quwitest.data.local.Project;
 import com.example.quwitest.databinding.FragmentProjectsListBinding;
+import com.squareup.picasso.Transformation;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ProjectListFragment extends Fragment implements ProjectListRecyclerViewAdapter.OnProjectClickListener {
+public class ProjectListFragment extends Fragment {
 
     private ProjectsViewModel viewModel;
     private ProjectListRecyclerViewAdapter adapter;
     private FragmentProjectsListBinding binding;
+    private Transformation transformation;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        viewModel = new ViewModelProvider(requireActivity(), new ProjectsViewModelFactory(context.getApplicationContext())).get(ProjectsViewModel.class);
+        transformation = ((Application) context.getApplicationContext()).getListImageTransformation();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        refreshProjects();
+    }
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
@@ -35,21 +52,24 @@ public class ProjectListFragment extends Fragment implements ProjectListRecycler
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.swipeContainer.setOnRefreshListener(() -> viewModel.loadProjects());
-        binding.swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+        binding.swipeContainer.setOnRefreshListener(this::refreshProjects);
+        binding.swipeContainer.setColorSchemeResources(
+                android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+                android.R.color.holo_red_light
+        );
 
-        adapter = new ProjectListRecyclerViewAdapter();
-        adapter.setOnProjectClickListener(this);
+        adapter = new ProjectListRecyclerViewAdapter(this::onProjectClick, transformation);
         binding.list.setAdapter(adapter);
 
-
-        viewModel = new ViewModelProvider(requireActivity(), new ProjectsViewModelFactory(getContext())).get(ProjectsViewModel.class);
-
-        viewModel.getProjects().observe(getViewLifecycleOwner(), items -> adapter.setItems(items));
-        viewModel.getLoadingInProgress().observe(getViewLifecycleOwner(), this::switchProgressBar);
+        viewModel.getProjects().observe(getViewLifecycleOwner(), items -> {
+            if (items == null) {
+                return;
+            }
+            adapter.setItems(items);
+        });
+        viewModel.getLoadingInProgress().observe(getViewLifecycleOwner(), this::switchLoadingIndicator);
         viewModel.getError().observe(getViewLifecycleOwner(), this::showError);
 
 
@@ -57,17 +77,21 @@ public class ProjectListFragment extends Fragment implements ProjectListRecycler
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         binding = null;
+        super.onDestroyView();
+    }
+
+    private void refreshProjects() {
+        viewModel.loadProjects();
     }
 
     private void showError(Throwable throwable) {
-        Toast.makeText(requireActivity(), throwable.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-        Log.i(getTag(), throwable.getMessage(), throwable);
+        Toast.makeText(requireContext().getApplicationContext(), throwable.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        Log.e(getTag(), throwable.getMessage(), throwable);
     }
 
-    private void switchProgressBar(Boolean showProgress) {
-        if (showProgress) {
+    private void switchLoadingIndicator(Boolean loading) {
+        if (loading) {
             binding.progressBar.setVisibility(View.VISIBLE);
         } else {
             binding.progressBar.setVisibility(View.GONE);
@@ -75,10 +99,9 @@ public class ProjectListFragment extends Fragment implements ProjectListRecycler
         }
     }
 
-    @Override
-    public void onProjectClick(Project project) {
-        NavHostFragment.findNavController(this).navigate(ProjectListFragmentDirections.actionProjectListFragmentToDetailsFragment());
-        viewModel.setCurrentProject(project);
+    private void onProjectClick(Project project) {
+        MainActivity activity = (MainActivity) requireActivity();
+        activity.navigate(ProjectListFragmentDirections.actionProjectListFragmentToDetailsFragment(project));
     }
 
 }

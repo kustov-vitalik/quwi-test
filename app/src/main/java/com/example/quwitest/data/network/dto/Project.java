@@ -2,20 +2,29 @@ package com.example.quwitest.data.network.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class Project implements Serializable {
-    Integer id;
-    String name;
+public class Project {
+    @SerializedName("id")
+    private Integer id;
+    @SerializedName("name")
+    private String name;
     @SerializedName("logo_url")
-    String logoUrl;
+    private String logoUrl;
     @SerializedName("is_active")
-    Integer isActive;
+    private Integer isActive;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public Integer getIsActive() {
+        return isActive;
+    }
 }

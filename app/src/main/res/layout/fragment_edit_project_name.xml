@@ -10,10 +10,10 @@
         android:id="@+id/popup_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="32sp"
+        android:textSize="@dimen/big_text_size"
         android:gravity="start"
         android:text="@string/edit_project_name"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/small_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/popup_title"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/small_margin"
         tools:test="project name"
         android:inputType="text"
         android:importantForAutofill="no" />
@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/save"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/small_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_project_name" />
 
@@ -44,8 +44,8 @@
         android:id="@+id/buttonCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@android:string/cancel"
-        android:layout_margin="8dp"
+        android:text="@string/cancel"
+        android:layout_margin="@dimen/small_margin"
         app:layout_constraintEnd_toStartOf="@+id/buttonSave"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_project_name" />
 

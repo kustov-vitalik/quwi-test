@@ -1,6 +1,5 @@
 package com.example.quwitest.ui.login;
 
-import android.content.Context;
 import android.util.Log;
 import android.util.Patterns;
 
@@ -16,17 +15,18 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class LoginViewModel extends ViewModel {
 
+    private final CompositeDisposable disposable = new CompositeDisposable();
     private final MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private MutableLiveData<Boolean> loggedIn;
+
     private final LoginRepository loginRepository;
     private final TokenStorage tokenStorage;
 
-    private final CompositeDisposable disposable = new CompositeDisposable();
 
-    LoginViewModel(Context context) {
-        loginRepository = LoginRepository.getInstance(context);
-        tokenStorage = TokenStorage.getInstance(context);
+    public LoginViewModel(LoginRepository loginRepository, TokenStorage tokenStorage) {
+        this.loginRepository = loginRepository;
+        this.tokenStorage = tokenStorage;
     }
 
     LiveData<LoginFormState> getLoginFormState() {
@@ -102,14 +102,9 @@ public class LoginViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
-        super.onCleared();
         if (!disposable.isDisposed()) {
             disposable.dispose();
         }
-    }
-
-    public void logout() {
-        tokenStorage.removeToken();
-        loggedIn.setValue(false);
+        super.onCleared();
     }
 }

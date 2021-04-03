@@ -1,12 +1,12 @@
 package com.example.quwitest.data.network.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.google.gson.annotations.SerializedName;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UpdateProjectRequest {
+    @SerializedName("name")
     private String name;
+
+    public UpdateProjectRequest(String name) {
+        this.name = name;
+    }
 }

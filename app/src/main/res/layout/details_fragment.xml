@@ -9,9 +9,9 @@
     <ImageView
         android:id="@+id/project_logo"
         android:layout_width="wrap_content"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/project_details_logo_size"
         android:adjustViewBounds="true"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/standard_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,12 +26,11 @@
         app:layout_constraintGuide_percent="0.5"/>
 
     <TextView
+        style="@style/project_details_label"
         android:id="@+id/project_name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/project_name"
-        android:layout_margin="16dp"
-        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/project_logo" />
 
@@ -39,17 +38,17 @@
         android:id="@+id/project_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:textSize="18sp"
+        android:layout_margin="@dimen/standard_margin"
+        android:textSize="@dimen/project_text_size"
         app:layout_constraintEnd_toStartOf="@+id/edit_name_button"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/project_logo"
-        tools:text="Project Name" />
+        tools:text="@string/project_name" />
 
     <ImageButton
         android:id="@+id/edit_name_button"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="@dimen/project_logo_size"
+        android:layout_height="@dimen/project_logo_size"
         android:adjustViewBounds="true"
         android:contentDescription="@string/edit_project_name"
         android:foregroundGravity="center_vertical"
@@ -60,12 +59,11 @@
         app:layout_constraintTop_toBottomOf="@+id/project_logo" />
 
     <TextView
+        style="@style/project_details_label"
         android:id="@+id/project_active_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/active"
-        android:layout_margin="16dp"
-        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/project_name" />
 
@@ -73,9 +71,9 @@
         android:id="@+id/project_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Yup"
-        android:textSize="18sp"
-        android:layout_margin="16dp"
+        tools:text="@string/active"
+        android:textSize="@dimen/project_text_size"
+        android:layout_margin="@dimen/standard_margin"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/project_name" />
 

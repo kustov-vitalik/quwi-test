@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Quwi.Проекты</string>
+    <string name="prompt_email">Адрес почты</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Войти</string>
+    <string name="action_sign_in_short">Войти</string>
+    <string name="welcome">Привет</string>
+    <string name="invalid_username">Неверное имя пользователя</string>
+    <string name="invalid_password">Неверный пароль</string>
+    <string name="login_failed">Ошибка авторизации</string>
+    <string name="project_logo">Логотип проекта</string>
+    <string name="project_name">Название проекта</string>
+    <string name="active">Активен?</string>
+    <string name="edit_project_name">Название проекта</string>
+    <string name="save">Сохранить</string>
+    <string name="project_name_hint">Название проекта</string>
+    <string name="cancel">Отмена</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="empty_project_name">Пустое значение</string>
+    <string name="loading">Загрузка...</string>
+    <string name="project_list">Список проектов</string>
+    <string name="project_details">Детали по проекту</string>
+    <string name="sign_in_title">Авторизация</string>
+    <string name="edit_project_name_title">Изменить название проекта</string>
+</resources>

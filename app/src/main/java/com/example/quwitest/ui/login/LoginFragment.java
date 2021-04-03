@@ -1,5 +1,6 @@
 package com.example.quwitest.ui.login;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,8 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.quwitest.MainActivity;
 import com.example.quwitest.R;
 import com.example.quwitest.databinding.FragmentLoginBinding;
 
@@ -37,6 +38,12 @@ public class LoginFragment extends Fragment {
         }
     };
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        loginViewModel = new ViewModelProvider(requireActivity(), new LoginViewModelFactory(context.getApplicationContext())).get(LoginViewModel.class);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -49,7 +56,6 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory(getContext())).get(LoginViewModel.class);
 
         loginViewModel.getLoginFormState().observe(getViewLifecycleOwner(), loginFormState -> {
             if (loginFormState == null) {
@@ -101,10 +107,12 @@ public class LoginFragment extends Fragment {
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + model.getDisplayName();
+        String welcome = getString(R.string.welcome) + " " + model.getDisplayName();
         if (getContext() != null && getContext().getApplicationContext() != null) {
             Toast.makeText(getContext().getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-            NavHostFragment.findNavController(this).navigate(LoginFragmentDirections.actionLoginFragmentToProjectListFragment());
+
+            MainActivity activity = (MainActivity) requireActivity();
+            activity.navigate(LoginFragmentDirections.actionLoginFragmentToProjectListFragment());
         }
     }
 

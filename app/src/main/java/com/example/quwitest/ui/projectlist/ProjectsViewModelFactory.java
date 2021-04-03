@@ -6,16 +6,29 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import lombok.RequiredArgsConstructor;
+import com.example.quwitest.Application;
 
-@RequiredArgsConstructor
+import java.util.Objects;
+
 public class ProjectsViewModelFactory implements ViewModelProvider.Factory {
 
-    private final Context context;
+    private final Application context;
+
+    public ProjectsViewModelFactory(Context context) {
+        if (!(context instanceof Application)) {
+            throw new IllegalArgumentException("Application context required");
+        }
+        this.context = (Application) context;
+    }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new ProjectsViewModel(context);
+        ProjectsViewModel viewModel = new ProjectsViewModel(context.getProjectsRepository());
+        try {
+            return Objects.requireNonNull(modelClass.cast(viewModel));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

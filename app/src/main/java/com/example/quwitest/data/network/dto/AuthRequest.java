@@ -1,13 +1,15 @@
 package com.example.quwitest.data.network.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.google.gson.annotations.SerializedName;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class AuthRequest {
+    @SerializedName("email")
     private String email;
+    @SerializedName("password")
     private String password;
+
+    public AuthRequest(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }

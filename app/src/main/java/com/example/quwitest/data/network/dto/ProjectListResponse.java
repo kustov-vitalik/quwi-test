@@ -1,16 +1,14 @@
 package com.example.quwitest.data.network.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProjectListResponse {
-
+    @SerializedName("projects")
     private List<Project> projects;
 
+    public List<Project> getProjects() {
+        return projects;
+    }
 }

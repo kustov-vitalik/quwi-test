@@ -8,25 +8,22 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.quwitest.MainActivity;
 import com.example.quwitest.R;
-import com.example.quwitest.data.network.dto.Project;
+import com.example.quwitest.data.local.Project;
 import com.example.quwitest.databinding.DetailsFragmentBinding;
-import com.example.quwitest.ui.projectlist.ProjectsViewModel;
-import com.example.quwitest.ui.projectlist.ProjectsViewModelFactory;
 import com.squareup.picasso.Picasso;
 
-public class DetailsFragment extends Fragment {
+import java.util.Objects;
 
-    private ProjectsViewModel viewModel;
+public class DetailsFragment extends Fragment {
     private DetailsFragmentBinding binding;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        viewModel = new ViewModelProvider(requireActivity(), new ProjectsViewModelFactory(getContext())).get(ProjectsViewModel.class);
+    @NonNull
+    private Project getProject() {
+        Project project = DetailsFragmentArgs.fromBundle(requireArguments()).getProject();
+        return Objects.requireNonNull(project);
     }
 
     @Override
@@ -39,26 +36,24 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel.getCurrentProject().observe(getViewLifecycleOwner(), this::updateUI);
-    }
-
-    private void updateUI(Project project) {
-        binding.projectActive.setText(project.getIsActive() == 1 ? "Yes" : "No");
+        binding.editNameButton.setOnClickListener(this::onEditProjectNameDialogRequested);
+        Project project = getProject();
+        binding.projectActive.setText(project.isActive() ? getString(R.string.yes) : getString(R.string.no));
         binding.projectName.setText(project.getName());
         Picasso.get().load(project.getLogoUrl())
                 .placeholder(R.drawable.project_logo_placeholder)
                 .error(R.drawable.project_logo_placeholder)
                 .into(binding.projectLogo);
-        binding.editNameButton.setOnClickListener(v -> {
-            Bundle params = new Bundle();
-            params.putSerializable("project", project);
-            NavHostFragment.findNavController(this).navigate(DetailsFragmentDirections.actionDetailsFragmentToEditProjectNameFragment().getActionId(), params);
-        });
+    }
+
+    private void onEditProjectNameDialogRequested(View view) {
+        MainActivity activity = (MainActivity) requireActivity();
+        activity.navigate(DetailsFragmentDirections.actionDetailsFragmentToEditProjectNameFragment(getProject()));
     }
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         binding = null;
+        super.onDestroyView();
     }
 }

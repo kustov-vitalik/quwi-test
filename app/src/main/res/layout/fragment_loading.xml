@@ -10,8 +10,8 @@
         android:visibility="visible"
         android:id="@+id/loading_progress_bar"
         android:layout_gravity="center"
-        android:layout_height="100dp"
-        android:layout_width="100dp"
+        android:layout_height="@dimen/loader_size"
+        android:layout_width="@dimen/loader_size"
         />
 
 </FrameLayout>
