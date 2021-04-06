@@ -5,32 +5,35 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.quwitest.MainActivity;
-import com.example.quwitest.R;
 import com.example.quwitest.data.local.Project;
 import com.example.quwitest.databinding.FragmentEditProjectNameBinding;
 import com.example.quwitest.ui.projectlist.ProjectsViewModel;
-import com.example.quwitest.ui.projectlist.ProjectsViewModelFactory;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class EditProjectNameFragment extends DialogFragment {
     private ProjectsViewModel viewModel;
     private FragmentEditProjectNameBinding binding;
+    @Inject
+    EditProjectFlowListener editProjectFlowListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        viewModel = new ViewModelProvider(requireActivity(), new ProjectsViewModelFactory(context.getApplicationContext())).get(ProjectsViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(ProjectsViewModel.class);
     }
 
     @NonNull
@@ -52,7 +55,7 @@ public class EditProjectNameFragment extends DialogFragment {
         Project project = getProject();
         binding.editTextProjectName.setText(project.getName());
         binding.buttonSave.setOnClickListener(this::onSaveProjectNameRequested);
-        binding.buttonCancel.setOnClickListener(v -> goBack());
+        binding.buttonCancel.setOnClickListener(v -> editProjectFlowListener.onCancelEditing());
     }
 
     @Override
@@ -64,23 +67,23 @@ public class EditProjectNameFragment extends DialogFragment {
     private void onSaveProjectNameRequested(View view) {
         final String updatedName = binding.editTextProjectName.getText().toString().trim();
         if (updatedName.isEmpty()) {
-            showError(getString(R.string.empty_project_name));
+            editProjectFlowListener.onEmptyInputData();
             return;
         }
 
-        viewModel.saveProjectName(getProject(), updatedName, this::onProjectUpdatedSuccessfully, throwable -> showError(throwable.getLocalizedMessage()));
+        viewModel.saveProjectName(getProject(), updatedName,
+                editProjectFlowListener::onEditSuccess,
+                throwable -> editProjectFlowListener.onEditFailed(throwable.getLocalizedMessage())
+        );
     }
 
-    private void goBack() {
-        ((MainActivity) requireActivity()).navigateUp();
-    }
+    public interface EditProjectFlowListener {
+        void onEmptyInputData();
 
-    private void showError(String error) {
-        Toast.makeText(getContext().getApplicationContext(), error, Toast.LENGTH_LONG).show();
-    }
+        void onEditFailed(String error);
 
-    private void onProjectUpdatedSuccessfully(Project project) {
-        MainActivity activity = (MainActivity) requireActivity();
-        activity.navigate(EditProjectNameFragmentDirections.actionEditProjectNameFragmentToDetailsFragment(project));
+        void onCancelEditing();
+
+        void onEditSuccess(Project project);
     }
 }

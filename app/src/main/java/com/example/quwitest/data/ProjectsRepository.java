@@ -9,6 +9,8 @@ import com.example.quwitest.data.network.dto.UpdateProjectResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -18,6 +20,7 @@ public class ProjectsRepository {
 
     private final ProjectsResource projectsResource;
 
+    @Inject
     public ProjectsRepository(ProjectsResource projectsResource) {
         this.projectsResource = projectsResource;
     }

@@ -20,15 +20,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class ProjectListRecyclerViewAdapter extends RecyclerView.Adapter<ProjectListRecyclerViewAdapter.ViewHolder> {
 
     private final List<Project> projects = new ArrayList<>();
     private final Transformation imageTransformation;
-    private final OnProjectClickListener onProjectClickListener;
+    private OnProjectClickListener onProjectClickListener;
 
-    public ProjectListRecyclerViewAdapter(@NonNull OnProjectClickListener onProjectClickListener, @NonNull Transformation transformation) {
-        this.onProjectClickListener = Objects.requireNonNull(onProjectClickListener);
+    @Inject
+    public ProjectListRecyclerViewAdapter(@NonNull Transformation transformation) {
         this.imageTransformation = Objects.requireNonNull(transformation);
+    }
+
+    public void setOnProjectClickListener(@NotNull OnProjectClickListener onProjectClickListener) {
+        this.onProjectClickListener = Objects.requireNonNull(onProjectClickListener);
     }
 
     @NotNull
@@ -56,7 +64,9 @@ public class ProjectListRecyclerViewAdapter extends RecyclerView.Adapter<Project
     }
 
     public void onItemClick(int adapterPosition) {
-        onProjectClickListener.onProjectClick(projects.get(adapterPosition));
+        if (onProjectClickListener != null) {
+            onProjectClickListener.onProjectClick(projects.get(adapterPosition));
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

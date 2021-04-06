@@ -11,21 +11,28 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.quwitest.MainActivity;
 import com.example.quwitest.databinding.FragmentLoadingBinding;
 import com.example.quwitest.ui.login.LoginViewModel;
-import com.example.quwitest.ui.login.LoginViewModelFactory;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class LoadingFragment extends Fragment {
     private FragmentLoadingBinding binding;
+
     private LoginViewModel viewModel;
+
+    @Inject
+    LoadingFlowListener loadingFlowListener;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        viewModel = new ViewModelProvider(requireActivity(), new LoginViewModelFactory(context.getApplicationContext())).get(LoginViewModel.class);
+        viewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
     }
 
     @Override
@@ -38,11 +45,10 @@ public class LoadingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle state) {
         super.onViewCreated(view, state);
         viewModel.getLoggedIn().observe(getViewLifecycleOwner(), loggedIn -> {
-            MainActivity activity = (MainActivity) requireActivity();
             if (loggedIn) {
-                activity.navigate(LoadingFragmentDirections.actionLoadingFragmentToProjectListFragment());
+                loadingFlowListener.onUserLoggedIn();
             } else {
-                activity.navigate(LoadingFragmentDirections.actionLoadingFragmentToLoginFragment());
+                loadingFlowListener.onAuthenticationRequired();
             }
         });
     }
@@ -51,5 +57,11 @@ public class LoadingFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public interface LoadingFlowListener {
+        void onUserLoggedIn();
+
+        void onAuthenticationRequired();
     }
 }

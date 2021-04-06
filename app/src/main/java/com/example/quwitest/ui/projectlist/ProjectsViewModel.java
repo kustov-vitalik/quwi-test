@@ -11,8 +11,12 @@ import com.example.quwitest.data.local.Project;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
 
+@HiltViewModel
 public class ProjectsViewModel extends ViewModel {
     private final CompositeDisposable disposable = new CompositeDisposable();
 
@@ -22,6 +26,7 @@ public class ProjectsViewModel extends ViewModel {
 
     private final ProjectsRepository projectsRepository;
 
+    @Inject
     public ProjectsViewModel(ProjectsRepository projectsRepository) {
         this.projectsRepository = projectsRepository;
     }

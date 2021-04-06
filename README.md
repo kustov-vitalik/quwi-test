@@ -23,3 +23,4 @@
 - *[Google AutoValue](https://github.com/google/auto)*
 - *[Retrofit](https://square.github.io/retrofit/)*, *[OkHttp](https://square.github.io/okhttp/)*, *[Gson](https://github.com/google/gson)*
 - *[Picasso](https://square.github.io/picasso/)*
+- *[Dagger Hilt](https://dagger.dev/hilt/)*

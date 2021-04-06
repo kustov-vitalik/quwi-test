@@ -6,16 +6,21 @@ import com.example.quwitest.data.network.dto.AuthRequest;
 import com.example.quwitest.data.network.dto.AuthResponse;
 import com.example.quwitest.data.network.dto.CurrentUserResponse;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.scopes.ViewModelScoped;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+@ViewModelScoped
 public class LoginRepository {
     private final AuthResource authResource;
     private final UsersResource usersResource;
 
+    @Inject
     public LoginRepository(AuthResource authResource, UsersResource usersResource) {
         this.authResource = authResource;
         this.usersResource = usersResource;

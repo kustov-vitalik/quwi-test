@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,13 +15,18 @@ import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.quwitest.MainActivity;
-import com.example.quwitest.R;
 import com.example.quwitest.databinding.FragmentLoginBinding;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class LoginFragment extends Fragment {
     private LoginViewModel loginViewModel;
     private FragmentLoginBinding binding;
+    @Inject
+    LoginFlowListener loginFlowListener;
     private final TextWatcher afterTextChangedListener = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -41,7 +45,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        loginViewModel = new ViewModelProvider(requireActivity(), new LoginViewModelFactory(context.getApplicationContext())).get(LoginViewModel.class);
+        loginViewModel = new ViewModelProvider(requireActivity()).get(LoginViewModel.class);
     }
 
     @Nullable
@@ -76,10 +80,10 @@ public class LoginFragment extends Fragment {
             }
             binding.loading.setVisibility(View.GONE);
             if (loginResult.getError() != null) {
-                showLoginFailed(loginResult.getError());
+                loginFlowListener.onLoginFailed(loginResult.getError());
             }
             if (loginResult.getSuccess() != null) {
-                updateUiWithUser(loginResult.getSuccess());
+                loginFlowListener.onLoginSuccess(loginResult.getSuccess());
             }
         });
 
@@ -102,23 +106,13 @@ public class LoginFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         binding = null;
+        super.onDestroyView();
     }
 
-    private void updateUiWithUser(LoggedInUserView model) {
-        String welcome = getString(R.string.welcome) + " " + model.getDisplayName();
-        if (getContext() != null && getContext().getApplicationContext() != null) {
-            Toast.makeText(getContext().getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+    public interface LoginFlowListener {
+        void onLoginSuccess(LoggedInUserView model);
 
-            MainActivity activity = (MainActivity) requireActivity();
-            activity.navigate(LoginFragmentDirections.actionLoginFragmentToProjectListFragment());
-        }
-    }
-
-    private void showLoginFailed(@StringRes Integer errorString) {
-        if (getContext() != null && getContext().getApplicationContext() != null) {
-            Toast.makeText(getContext().getApplicationContext(), errorString, Toast.LENGTH_LONG).show();
-        }
+        void onLoginFailed(@StringRes Integer errorString);
     }
 }

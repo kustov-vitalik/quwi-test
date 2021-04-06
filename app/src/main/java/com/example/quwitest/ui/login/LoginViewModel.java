@@ -11,8 +11,12 @@ import com.example.quwitest.R;
 import com.example.quwitest.data.LoginRepository;
 import com.example.quwitest.data.local.sharedpreferences.TokenStorage;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.disposables.CompositeDisposable;
 
+@HiltViewModel
 public class LoginViewModel extends ViewModel {
 
     private final CompositeDisposable disposable = new CompositeDisposable();
@@ -23,7 +27,7 @@ public class LoginViewModel extends ViewModel {
     private final LoginRepository loginRepository;
     private final TokenStorage tokenStorage;
 
-
+    @Inject
     public LoginViewModel(LoginRepository loginRepository, TokenStorage tokenStorage) {
         this.loginRepository = loginRepository;
         this.tokenStorage = tokenStorage;
